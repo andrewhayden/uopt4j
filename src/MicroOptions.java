@@ -6,7 +6,7 @@
 /**
  * A simple class for configuring and parsing command-line options.
  * @author Andrew Hayden
- * @version 1.0
+ * @version 1.1
  */
 public class MicroOptions {
     /**
@@ -122,23 +122,44 @@ public class MicroOptions {
 
     /**
      * Configure an optional, no-arg option having the specified name.
+     * The name must be non-null, non-empty, and must not start with a hypen.
+     * Spaces are allowed but discouraged since they complicate command-line
+     * construction in most environments.
      * @param name the name to assign to the option
      * @return the option object, which can be used for further configuration
+     * @throws UnsupportedOperationException if the name is null, the empty
+     * string, or starts with a hyphen
      * @see MicroOptions.Option#describedAs(String)
      * @see MicroOptions.Option#isRequired()
      * @see MicroOptions.Option#isUnary()
      */
     public Option option(String name) {
+        checkName(name);
         Option o = new Option(name); opts.put(name, o); return o; }
+
+    /**
+     * Checks a name for validity and throws an UnsupportedOptionException
+     * if it is invalid.
+     * @param name the name to check
+     * @throws UnsupportedOperationException if the name is null, the empty
+     * string, or starts with a hyphen 
+     */
+    private void checkName(String name) {
+        if (name == null || name.length() == 0 || name.charAt(0) == '-')
+            throw new UnsupportedOptionException("illegal name: " + name);
+    }
 
     /**
      * Returns true iff the specified option was encountered during parsing.
      * @param option the option to look for
      * @return true if so, otherwise false
      * @throws UnsupportedOptionException if the option hasn't been defined
-     * via {@link #option(String)}.
+     * via {@link #option(String)};
+     * also thrown if the name passed to the method is null, the empty string,
+     * or starts with a hyphen
      */
     public boolean has(String option) {
+        checkName(option);
         if (!opts.containsKey(option))
             throw new UnsupportedOptionException(option);
         return args.containsKey(option);
@@ -150,7 +171,9 @@ public class MicroOptions {
      * @return the argument, iff the option takes and argument (is not unary)
      * and was encountered during parsing; otherwise, null.
      * @throws UnsupportedOptionException if the option hasn't been defined
-     * via {@link #option(String)} or is unary (cannot have an argument).
+     * via {@link #option(String)} or is unary (cannot have an argument);
+     * also thrown if the name passed to the method is null, the empty string,
+     * or starts with a hyphen
      */
     public String getArg(String option) { return getArg(option, null); }
 
@@ -163,11 +186,16 @@ public class MicroOptions {
      * @return the argument, iff the option takes and argument and was not
      * encountered during parsing; otherwise, the specified default value
      * @throws UnsupportedOptionException if the option hasn't been defined
-     * via {@link #option(String)} or is unary (cannot have an argument).
+     * via {@link #option(String)} or is unary (cannot have an argument);
+     * also thrown if the name passed to the method is null, the empty string,
+     * or starts with a hyphen
      */
     public String getArg(String option, String defaultValue) {
+        checkName(option);
+        if (!opts.containsKey(option))
+            throw new UnsupportedOptionException(option);
         if (opts.get(option).u)
             throw new OptionException("Option takes no arguments: " + option);
-        return has(option) ? args.get(option) : defaultValue;
+        return args.containsKey(option) ? args.get(option) : defaultValue;
     }
 }

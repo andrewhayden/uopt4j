@@ -62,16 +62,25 @@ public class MicroOptions {
                 throw new RequiredOptionException(o.n);
     }
     public Option option(String name) {
+        checkName(name);
         Option o = new Option(name); opts.put(name, o); return o; }
+    private void checkName(String name) {
+        if (name == null || name.length() == 0 || name.charAt(0) == '-')
+            throw new UnsupportedOptionException("illegal name: " + name);
+    }
     public boolean has(String option) {
+        checkName(option);
         if (!opts.containsKey(option))
             throw new UnsupportedOptionException(option);
         return args.containsKey(option);
     }
     public String getArg(String option) { return getArg(option, null); }
     public String getArg(String option, String defaultValue) {
+        checkName(option);
+        if (!opts.containsKey(option))
+            throw new UnsupportedOptionException(option);
         if (opts.get(option).u)
             throw new OptionException("Option takes no arguments: " + option);
-        return has(option) ? args.get(option) : defaultValue;
+        return args.containsKey(option) ? args.get(option) : defaultValue;
     }
 }

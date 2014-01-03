@@ -32,10 +32,14 @@ UnsupportedOptionException(k); Option o = opts.get(k); if (!o.u) { if (i + 1 >=
 strings.length) throw new MissingArgException(k); value = strings[++i]; }
 args.put(k, value); } for (Option o : opts.values()) if (o.r &&
 !args.containsKey(o.n)) throw new RequiredOptionException(o.n); } public Option
-option(String name) { Option o = new Option(name); opts.put(name, o); return o;
-} public boolean has(String option) { if (!opts.containsKey(option)) throw new
+option(String name) { checkName(name); Option o = new Option(name);
+opts.put(name, o); return o; } private void checkName(String name) { if (name ==
+null || name.length() == 0 || name.charAt(0) == '-') throw new
+UnsupportedOptionException("illegal name: " + name); } public boolean has(String
+option) { checkName(option); if (!opts.containsKey(option)) throw new
 UnsupportedOptionException(option); return args.containsKey(option); } public
 String getArg(String option) { return getArg(option, null); } public String
-getArg(String option, String defaultValue) { if (opts.get(option).u) throw new
-OptionException("Option takes no arguments: " + option); return has(option) ?
-args.get(option) : defaultValue; } }
+getArg(String option, String defaultValue) { checkName(option); if
+(!opts.containsKey(option)) throw new UnsupportedOptionException(option); if
+(opts.get(option).u) throw new OptionException("Option takes no arguments: " +
+option); return args.containsKey(option) ? args.get(option) : defaultValue; } }

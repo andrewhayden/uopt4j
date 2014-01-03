@@ -108,7 +108,7 @@ public class MicroOptionsTest {
         }
     }
 
-    @Test public void testValueFor_Fallback() {
+    @Test public void testGetArg_Fallback() {
         opts.option("x");
         opts.option("y");
         opts.parse("-y", "y-value");
@@ -117,7 +117,7 @@ public class MicroOptionsTest {
         assertEquals("y-value", opts.getArg("y", "y-fallback"));
     }
 
-    @Test public void testValueFor_Unary() {
+    @Test public void testGetArg_Unary() {
         opts.option("x").isUnary();
         opts.parse("-x");
         assertTrue(opts.has("x"));
@@ -131,6 +131,111 @@ public class MicroOptionsTest {
             opts.getArg("x", "foo");
             fail("Queried for an arg to a unary option");
         } catch (MicroOptions.OptionException e) {
+            // Expected
+        }
+    }
+
+    @Test public void testGetArg_Unsupported() {
+        opts.option("a").isUnary();
+        opts.option("b");
+        opts.parse("-a", "-b", "b-value");
+        try {
+            opts.getArg("z", "foo");
+            fail();
+        } catch (MicroOptions.UnsupportedOptionException e) {
+            // Expected
+        }
+    }
+
+    @Test public void testGetArg_Null() {
+        opts.option("a").isUnary();
+        opts.parse("-a");
+        try {
+            opts.getArg(null, "foo");
+            fail("succeeded in attempt to get arg for null option");
+        } catch (MicroOptions.UnsupportedOptionException e) {
+            // Expected
+        }
+    }
+
+    @Test public void testHasArg_Null() {
+        opts.option("a").isUnary();
+        opts.parse("-a");
+        try {
+            opts.has(null);
+            fail("succeeded in attempt to check null option");
+        } catch (MicroOptions.UnsupportedOptionException e) {
+            // Expected
+        }
+    }
+
+    @Test public void testGetArg_EmptyString() {
+        opts.option("a").isUnary();
+        opts.parse("-a");
+        try {
+            opts.getArg("");
+            fail("succeeded in attempt to get arg for empty option");
+        } catch (MicroOptions.UnsupportedOptionException e) {
+            // Expected
+        }
+    }
+
+    @Test public void testHasArg_EmptyString() {
+        opts.option("a").isUnary();
+        opts.parse("-a");
+        try {
+            opts.has("");
+            fail("succeeded in attempt to check empty option");
+        } catch (MicroOptions.UnsupportedOptionException e) {
+            // Expected
+        }
+    }
+
+    @Test public void testGetArg_IllegalString() {
+        opts.option("a").isUnary();
+        opts.parse("-a");
+        try {
+            opts.getArg("-a");
+            fail("succeeded in attempt to get arg for illegal option");
+        } catch (MicroOptions.UnsupportedOptionException e) {
+            // Expected
+        }
+    }
+
+    @Test public void testHasArg_IllegalString() {
+        opts.option("a").isUnary();
+        opts.parse("-a");
+        try {
+            opts.has("-a");
+            fail("succeeded in attempt to check illegal option");
+        } catch (MicroOptions.UnsupportedOptionException e) {
+            // Expected
+        }
+    }
+
+    @Test public void testOption_EmptyString() {
+        try {
+            opts.option("");
+            fail("Created option with empty string as the name");
+        } catch (MicroOptions.UnsupportedOptionException e) {
+            // Expected
+        }
+    }
+
+    @Test public void testOption_NullString() {
+        try {
+            opts.option(null);
+            fail("Created option with null string as the name");
+        } catch (MicroOptions.UnsupportedOptionException e) {
+            // Expected
+        }
+    }
+
+    @Test public void testOption_IllegalString() {
+        try {
+            opts.option("-illegal-because-it-starts-with-a-hypen");
+            fail("Created option illegal name");
+        } catch (MicroOptions.UnsupportedOptionException e) {
             // Expected
         }
     }
