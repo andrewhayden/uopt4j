@@ -5,7 +5,9 @@ HEADER=$(cat <<HERE
 // Copyright (c) 2013 Andrew Hayden. All rights reserved.
 // Use of this source code is governed by an Apache 2.0 license that can be
 // found in the LICENSE.md file.
-HERE)
+// Source: https://github.com/andrewhayden/uopt4j
+HERE
+)
 
 # Blow away old stuff
 echo  "Cleaning"
@@ -31,7 +33,12 @@ mkdir -p /tmp/uopt4j
 javac -d /tmp/uopt4j -source 1.5 -target 1.5 altsrc-minified/MicroOptions.java
 
 
-echo "Code compiles, building release JAR"
+echo "Building documentation"
+rm -rf javadoc
+mkdir javadoc
+javadoc -sourcepath src -source 1.5 -quiet -windowtitle "uopt4j documentation" -d javadoc src/MicroOptions.java
+
+echo "Building release JAR"
 rm -rf release
 mkdir release
 jar cf release/uopt4j.jar -C /tmp/uopt4j/ .

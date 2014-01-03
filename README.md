@@ -99,6 +99,9 @@ The features deemed critical may be summarized as follows:
 Any missing functionality (e.g., converting arguments from Strings to other
 formats) is left to the caller. This keeps things clean and compact.
 
+The format of the source in both original and compact form (but not minified)
+is compatible with the Chromium coding conventions and will pass a presubmit
+check, should you wish to use it there...
 
 
 Why? (The Long Version)

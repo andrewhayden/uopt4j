@@ -45,9 +45,14 @@ public class JavaMinifyTool {
 
         // Buffer and strip all single-line comments
         while((currentLine = reader.readLine()) != null) {
+            // Trim trailing whitespace
+            currentLine = currentLine.replaceFirst("\\s+$", "");
+
+            // Delete single-line comments
             int indexOfComment = currentLine.indexOf("//");
             if (indexOfComment >= 0) {
                 currentLine = currentLine.substring(0, indexOfComment);
+                currentLine = currentLine.replaceFirst("\\s+$", "");
             }
             buffer.append(currentLine);
             buffer.append('\n');

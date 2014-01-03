@@ -1,37 +1,40 @@
 // Copyright (c) 2013 Andrew Hayden. All rights reserved.
 // Use of this source code is governed by an Apache 2.0 license that can be
 // found in the LICENSE.md file.
+// Source: https://github.com/andrewhayden/uopt4j
 
 /**
  * A simple class for configuring and parsing command-line options.
+ * @author Andrew Hayden
+ * @version 1.0
  */
-public class MicroOptions{
+public class MicroOptions {
     /**
      * All option-related exceptions are instances of this base class.
      */
-    public static class OptionException extends RuntimeException{
-        public OptionException(String message){ super(message);}}
+    public static class OptionException extends RuntimeException {
+        public OptionException(String message) { super(message); } }
 
     /**
      * Thrown when the parser encounters an option that has not been defined.
      */
-    public static class UnsupportedOptionException extends OptionException{
-        public UnsupportedOptionException(String o){
-            super("Unsupported option '"+o+"'");}}
+    public static class UnsupportedOptionException extends OptionException {
+        public UnsupportedOptionException(String o) {
+            super("Unsupported option '" + o + "'"); } }
 
     /**
      * Thrown when the parser can't find the argument for a non-unary option.
      */
-    public static class MissingArgException extends OptionException{
-        public MissingArgException(String o){
-            super("Missing argument for option '"+o+"'");}}
+    public static class MissingArgException extends OptionException {
+        public MissingArgException(String o) {
+            super("Missing argument for option '" + o + "'"); } }
 
     /**
      * Thrown when the parser can't find a required option.
      */
-    public static class RequiredOptionException extends OptionException{
-        public RequiredOptionException(String o){
-            super("Missing required option '"+o+"'");}}
+    public static class RequiredOptionException extends OptionException {
+        public RequiredOptionException(String o) {
+            super("Missing required option '" + o + "'"); } }
 
     /**
      * Core class for defining options using builder-style methods.
@@ -39,26 +42,26 @@ public class MicroOptions{
     public class Option{
         private String n,d; // name, description
         private boolean u,r; // unary, required
-        private Option(String n){this.n=n;}
+        private Option(String n) { this.n = n; }
 
         /**
          * Provides a human-readable description for this option.
          * @param d the description
          * @return this option
          */
-        public Option describedAs(String d){this.d=d; return this;}
+        public Option describedAs(String d) { this.d = d; return this; }
 
         /**
          * Specifies that this option is required.
          * @return this option
          */
-        public Option isRequired(){this.r=true; return this;}
+        public Option isRequired() { this.r = true; return this; }
 
         /**
          * Specifies that this option takes no arguments.
          * @return this option
          */
-        public Option isUnary(){this.u=true; return this;}
+        public Option isUnary() { this.u = true; return this; }
     }
 
     // All option metadata, sorted by option name.
@@ -71,18 +74,18 @@ public class MicroOptions{
     /**
      * Creates an initially-empty set of options.
      */
-    public MicroOptions(){}
+    public MicroOptions() { super(); }
 
     /**
      * @return a human-readable usage string
      */
-    public String usageString(){
-        int max=0; // max length of any option name, for alignment.
-        for (String s:opts.keySet()) max=Math.max(s.length(), max);
-        StringBuilder b=new StringBuilder();
-        java.util.Iterator<Option> i=opts.values().iterator();
-        while(i.hasNext()){
-            Option o=i.next();
+    public String usageString() {
+        int max = 0; // max length of any option name, for alignment.
+        for (String s : opts.keySet()) max = Math.max(s.length(), max);
+        StringBuilder b = new StringBuilder();
+        java.util.Iterator<Option> i = opts.values().iterator();
+        while (i.hasNext()) {
+            Option o = i.next();
             b.append(o.u ? " -" : "--");
             b.append(String.format("%1$-" + max + "s", o.n));
             b.append(o.u ? "          " : " [ARG]    ");
@@ -98,17 +101,17 @@ public class MicroOptions{
      * configured options.
      * @param strings e.g., the arguments on the command line
      */
-    public void parse(String... strings){
-        for (int i=0; i<strings.length; i++) {
-            String k=strings[i]; String value=null;
-            if (k.matches("-[[^\\s]&&[^-]]")){k=k.substring(1);}
-            else if (k.matches("--[\\S]{2,}")){k=k.substring(2);}
+    public void parse(String... strings) {
+        for (int i = 0; i < strings.length; i++) {
+            String k = strings[i]; String value = null;
+            if (k.matches("-[[^\\s]&&[^-]]")) { k = k.substring(1); }
+            else if (k.matches("--[\\S]{2,}")) { k = k.substring(2); }
             else throw new UnsupportedOptionException(k);
             if (!opts.containsKey(k)) throw new UnsupportedOptionException(k);
-            Option o=opts.get(k);
-            if (!o.u){
-                if (i+1 >= strings.length) throw new MissingArgException(k);
-                value=strings[++i];
+            Option o = opts.get(k);
+            if (!o.u) {
+                if (i + 1 >= strings.length) throw new MissingArgException(k);
+                value = strings[++i];
             }
             args.put(k, value);
         }
@@ -125,8 +128,8 @@ public class MicroOptions{
      * @see MicroOptions.Option#isRequired()
      * @see MicroOptions.Option#isUnary()
      */
-    public Option option(String name){
-        Option o=new Option(name); opts.put(name, o); return o;}
+    public Option option(String name) {
+        Option o = new Option(name); opts.put(name, o); return o; }
 
     /**
      * Returns true iff the specified option was encountered during parsing.

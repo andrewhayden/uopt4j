@@ -1,38 +1,39 @@
 // Copyright (c) 2013 Andrew Hayden. All rights reserved.
 // Use of this source code is governed by an Apache 2.0 license that can be
 // found in the LICENSE.md file.
-public class MicroOptions{
-    public static class OptionException extends RuntimeException{
-        public OptionException(String message){ super(message);}}
-    public static class UnsupportedOptionException extends OptionException{
-        public UnsupportedOptionException(String o){
-            super("Unsupported option '"+o+"'");}}
-    public static class MissingArgException extends OptionException{
-        public MissingArgException(String o){
-            super("Missing argument for option '"+o+"'");}}
-    public static class RequiredOptionException extends OptionException{
-        public RequiredOptionException(String o){
-            super("Missing required option '"+o+"'");}}
+// Source: https://github.com/andrewhayden/uopt4j
+public class MicroOptions {
+    public static class OptionException extends RuntimeException {
+        public OptionException(String message) { super(message); } }
+    public static class UnsupportedOptionException extends OptionException {
+        public UnsupportedOptionException(String o) {
+            super("Unsupported option '" + o + "'"); } }
+    public static class MissingArgException extends OptionException {
+        public MissingArgException(String o) {
+            super("Missing argument for option '" + o + "'"); } }
+    public static class RequiredOptionException extends OptionException {
+        public RequiredOptionException(String o) {
+            super("Missing required option '" + o + "'"); } }
     public class Option{
-        private String n,d; 
-        private boolean u,r; 
-        private Option(String n){this.n=n;}
-        public Option describedAs(String d){this.d=d; return this;}
-        public Option isRequired(){this.r=true; return this;}
-        public Option isUnary(){this.u=true; return this;}
+        private String n,d;
+        private boolean u,r;
+        private Option(String n) { this.n = n; }
+        public Option describedAs(String d) { this.d = d; return this; }
+        public Option isRequired() { this.r = true; return this; }
+        public Option isUnary() { this.u = true; return this; }
     }
     private final java.util.Map<String,Option> opts =
             new java.util.TreeMap<String,Option>();
     private final java.util.Map<String,String> args =
             new java.util.HashMap<String, String>();
-    public MicroOptions(){}
-    public String usageString(){
-        int max=0; 
-        for (String s:opts.keySet()) max=Math.max(s.length(), max);
-        StringBuilder b=new StringBuilder();
-        java.util.Iterator<Option> i=opts.values().iterator();
-        while(i.hasNext()){
-            Option o=i.next();
+    public MicroOptions() { super(); }
+    public String usageString() {
+        int max = 0;
+        for (String s : opts.keySet()) max = Math.max(s.length(), max);
+        StringBuilder b = new StringBuilder();
+        java.util.Iterator<Option> i = opts.values().iterator();
+        while (i.hasNext()) {
+            Option o = i.next();
             b.append(o.u ? " -" : "--");
             b.append(String.format("%1$-" + max + "s", o.n));
             b.append(o.u ? "          " : " [ARG]    ");
@@ -42,26 +43,26 @@ public class MicroOptions{
         }
         return b.toString();
     }
-    public void parse(String... strings){
-        for (int i=0; i<strings.length; i++) {
-            String k=strings[i]; String value=null;
-            if (k.matches("-[[^\\s]&&[^-]]")){k=k.substring(1);}
-            else if (k.matches("--[\\S]{2,}")){k=k.substring(2);}
+    public void parse(String... strings) {
+        for (int i = 0; i < strings.length; i++) {
+            String k = strings[i]; String value = null;
+            if (k.matches("-[[^\\s]&&[^-]]")) { k = k.substring(1); }
+            else if (k.matches("--[\\S]{2,}")) { k = k.substring(2); }
             else throw new UnsupportedOptionException(k);
             if (!opts.containsKey(k)) throw new UnsupportedOptionException(k);
-            Option o=opts.get(k);
-            if (!o.u){
-                if (i+1 >= strings.length) throw new MissingArgException(k);
-                value=strings[++i];
+            Option o = opts.get(k);
+            if (!o.u) {
+                if (i + 1 >= strings.length) throw new MissingArgException(k);
+                value = strings[++i];
             }
             args.put(k, value);
         }
-        for (Option o : opts.values()) 
+        for (Option o : opts.values())
             if (o.r && !args.containsKey(o.n))
                 throw new RequiredOptionException(o.n);
     }
-    public Option option(String name){
-        Option o=new Option(name); opts.put(name, o); return o;}
+    public Option option(String name) {
+        Option o = new Option(name); opts.put(name, o); return o; }
     public boolean has(String option) {
         if (!opts.containsKey(option))
             throw new UnsupportedOptionException(option);
