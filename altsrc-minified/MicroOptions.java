@@ -20,9 +20,9 @@ String>(); public MicroOptions() { super(); } public String usageString() { int
 max = 0; for (String s : opts.keySet()) max = Math.max(s.length(), max);
 StringBuilder b = new StringBuilder(); java.util.Iterator<Option> i =
 opts.values().iterator(); while (i.hasNext()) { Option o = i.next();
-b.append(o.u ? " -" : "--"); b.append(String.format("%1$-" + max + "s", o.n));
-b.append(o.u ? "          " : " [ARG]    "); b.append(o.d == null ? "" : o.d +
-" "); b.append(o.r ? "(required)" : "(optional)"); if (i.hasNext())
+b.append(o.n.length() == 1 ? " -" : "--"); b.append(String.format("%1$-" + max +
+"s", o.n)); b.append(o.u ? "          " : " [ARG]    "); b.append(o.d == null ?
+"" : o.d + " "); b.append(o.r ? "(required)" : "(optional)"); if (i.hasNext())
 b.append('\n'); } return b.toString(); } public void parse(String... strings) {
 for (int i = 0; i < strings.length; i++) { String k = strings[i]; String value =
 null; if (k.matches("-[[^\\s]&&[^-]]")) { k = k.substring(1); } else if
