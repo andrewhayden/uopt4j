@@ -17,11 +17,13 @@ public class MicroOptionsTest {
         opts.option("a").describedAs("A").isUnary();
         opts.option("bb").describedAs("B").isRequired();
         opts.option("d").isUnary().isRequired();
+        opts.option("ee").isUnary().isRequired();
         String expected =
                 " -a           A (optional)\n" +
                 "--bb [ARG]    B (required)\n" +
                 "--cc [ARG]    C (optional)\n" +
-                " -d           (required)";
+                " -d           (required)\n" +
+                "--ee          (required)";
         assertEquals(expected, opts.usageString());
     }
 

@@ -86,7 +86,7 @@ public class MicroOptions {
         java.util.Iterator<Option> i = opts.values().iterator();
         while (i.hasNext()) {
             Option o = i.next();
-            b.append(o.u ? " -" : "--");
+            b.append(o.n.length() == 1 ? " -" : "--");
             b.append(String.format("%1$-" + max + "s", o.n));
             b.append(o.u ? "          " : " [ARG]    ");
             b.append(o.d == null ? "" : o.d + " ");
