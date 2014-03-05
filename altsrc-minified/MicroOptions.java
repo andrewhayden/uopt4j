@@ -1,7 +1,16 @@
-// Copyright (c) 2013 Andrew Hayden. All rights reserved.
-// Use of this source code is governed by an Apache 2.0 license that can be
-// found in the LICENSE.md file.
-// Source: https://github.com/andrewhayden/uopt4j
+// Copyright 2014 Google Inc. All rights reserved.
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 public class MicroOptions { public static class OptionException extends
 RuntimeException { public OptionException(String message) { super(message); } }
 public static class UnsupportedOptionException extends OptionException { public
